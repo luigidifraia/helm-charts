@@ -2,7 +2,7 @@ jupyter
 =======
 A Helm chart to deploy Jupyter
 
-Current chart version is `0.2.3`
+Current chart version is `0.2.4`
 
 Source code can be found [here](https://github.com/luigidifraia/helm-charts)
 

@@ -1,0 +1,17 @@
+apiVersion: v1
+entries:
+  jupyter:
+  - apiVersion: v2
+    appVersion: 584f43f06586
+    created: "2021-04-27T23:13:23.113216069Z"
+    description: A Helm chart to deploy Jupyter
+    digest: 985146199840cf5b2bf726cb9df0bdd2f27ebeb37f753084ee8dd47ca68b1ca5
+    home: https://github.com/luigidifraia/helm-charts
+    maintainers:
+    - name: luigidifraia
+    name: jupyter
+    type: application
+    urls:
+    - https://github.com/luigidifraia/helm-charts/releases/download/jupyter-0.2.4/jupyter-0.2.4.tgz
+    version: 0.2.4
+generated: "2021-04-27T23:13:22.933564439Z"

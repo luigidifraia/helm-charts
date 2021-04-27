@@ -34,7 +34,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: busybox
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: [ "/bin/chmod", "-R","777", "/home/jovyan/work" ]
+          command: [ "/bin/chmod", "-R", "777", "/home/jovyan/work" ]
           volumeMounts:
           - name: jovyan-work-pv
             mountPath: /home/jovyan/work

@@ -59,7 +59,7 @@ jobs:
       - uses: luigidifraia/publish-to-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.CR_TOKEN }}
-          #COMMIT_MESSAGE: "Update chart documentation"
+          COMMIT_MESSAGE: "Update chart documentation"
 
   release:
     runs-on: ubuntu-latest

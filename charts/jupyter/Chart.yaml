@@ -2,7 +2,7 @@ apiVersion: v2
 name: jupyter
 description: A Helm chart to deploy Jupyter
 type: application
-version: 0.2.7
+version: 0.2.8
 appVersion: "584f43f06586"
 
 home: https://github.com/luigidifraia/helm-charts

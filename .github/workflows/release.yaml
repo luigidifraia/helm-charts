@@ -56,7 +56,7 @@ jobs:
           ./helm-docs
           rm helm-docs
 
-      - uses: luigidifraia/publish-to-github-action@master
+      - uses: luigidifraiawork/publish-to-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.CR_TOKEN }}
           COMMIT_MESSAGE: "Update chart documentation"
@@ -77,6 +77,6 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.1.0
         with:
-          charts_repo_url: https://luigidifraia.github.io/helm-charts
+          charts_repo_url: https://luigidifraiawork.github.io/helm-charts
         env:
           CR_TOKEN: "${{ secrets.CR_TOKEN }}"

@@ -1,145 +1,158 @@
-# incubator/zookeeper
+# zookeeper
 
-This helm chart provides an implementation of the ZooKeeper [StatefulSet](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/) found in Kubernetes Contrib [Zookeeper StatefulSet](https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper).
+![Version: 2.1.1](https://img.shields.io/badge/Version-2.1.1-informational?style=flat-square) ![AppVersion: 3.5.5](https://img.shields.io/badge/AppVersion-3.5.5-informational?style=flat-square)
 
-## Prerequisites
-* Kubernetes 1.10+
-* PersistentVolume support on the underlying infrastructure
-* A dynamic provisioner for the PersistentVolumes
-* A familiarity with [Apache ZooKeeper 3.5.x](https://zookeeper.apache.org/doc/r3.5.5/)
+Centralized service for maintaining configuration information, naming, providing distributed synchronization, and providing group services.
 
-## Chart Components
-This chart will do the following:
+**Homepage:** <https://zookeeper.apache.org/>
 
-* Create a fixed size ZooKeeper ensemble using a [StatefulSet](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/).
-* Create a [PodDisruptionBudget](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-disruption-budget/) so kubectl drain will respect the Quorum size of the ensemble.
-* Create a [Headless Service](https://kubernetes.io/docs/concepts/services-networking/service/) to control the domain of the ZooKeeper ensemble.
-* Create a Service configured to connect to the available ZooKeeper instance on the configured client port.
-* Optionally apply a [Pod Anti-Affinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature) to spread the ZooKeeper ensemble across nodes.
-* Optionally start JMX Exporter and Zookeeper Exporter containers inside Zookeeper pods.
-* Optionally create a job which creates Zookeeper chroots (e.g. `/kafka1`).
-* Optionally create a Prometheus ServiceMonitor for each enabled exporter container
+## Maintainers
 
-## Installing the Chart
-You can install the chart with the release name `zookeeper` as below.
+| Name | Email | Url |
+| ---- | ------ | --- |
+| lachie83 | lachlan.evenson@microsoft.com |  |
+| kow3ns | owensk@google.com |  |
 
-```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name zookeeper incubator/zookeeper
-```
+## Source Code
 
-If you do not specify a name, helm will select a name for you.
+* <https://github.com/apache/zookeeper>
+* <https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper>
 
-### Installed Components
-You can use `kubectl get` to view all of the installed components.
+## Requirements
 
-```console{%raw}
-$ kubectl get all -l app=zookeeper
-NAME:   zookeeper
-LAST DEPLOYED: Wed Apr 11 17:09:48 2018
-NAMESPACE: default
-STATUS: DEPLOYED
+Kubernetes: `^1.10.0-0`
 
-RESOURCES:
-==> v1beta1/PodDisruptionBudget
-NAME       MIN AVAILABLE  MAX UNAVAILABLE  ALLOWED DISRUPTIONS  AGE
-zookeeper  N/A            1                1                    2m
+## Values
 
-==> v1/Service
-NAME                TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)                     AGE
-zookeeper-headless  ClusterIP  None           <none>       2181/TCP,3888/TCP,2888/TCP  2m
-zookeeper           ClusterIP  10.98.179.165  <none>       2181/TCP                    2m
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| affinity | object | `{}` |  |
+| command[0] | string | `"/bin/bash"` |  |
+| command[1] | string | `"-xec"` |  |
+| command[2] | string | `"/config-scripts/run"` |  |
+| env.JMXAUTH | string | `"false"` |  |
+| env.JMXDISABLE | string | `"false"` |  |
+| env.JMXPORT | int | `1099` |  |
+| env.JMXSSL | string | `"false"` |  |
+| env.ZK_SYNC_LIMIT | int | `10` |  |
+| env.ZK_TICK_TIME | int | `2000` |  |
+| env.ZOO_AUTOPURGE_PURGEINTERVAL | int | `0` |  |
+| env.ZOO_AUTOPURGE_SNAPRETAINCOUNT | int | `3` |  |
+| env.ZOO_INIT_LIMIT | int | `5` |  |
+| env.ZOO_MAX_CLIENT_CNXNS | int | `60` |  |
+| env.ZOO_PORT | int | `2181` |  |
+| env.ZOO_STANDALONE_ENABLED | bool | `false` |  |
+| env.ZOO_TICK_TIME | int | `2000` |  |
+| exporters.jmx.config.lowercaseOutputName | bool | `false` |  |
+| exporters.jmx.config.rules[0].name | string | `"zookeeper_$2"` |  |
+| exporters.jmx.config.rules[0].pattern | string | `"org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+)><>(\\w+)"` |  |
+| exporters.jmx.config.rules[1].labels.replicaId | string | `"$2"` |  |
+| exporters.jmx.config.rules[1].name | string | `"zookeeper_$3"` |  |
+| exporters.jmx.config.rules[1].pattern | string | `"org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+)><>(\\w+)"` |  |
+| exporters.jmx.config.rules[2].labels.memberType | string | `"$3"` |  |
+| exporters.jmx.config.rules[2].labels.replicaId | string | `"$2"` |  |
+| exporters.jmx.config.rules[2].name | string | `"zookeeper_$4"` |  |
+| exporters.jmx.config.rules[2].pattern | string | `"org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+), name2=(\\w+)><>(\\w+)"` |  |
+| exporters.jmx.config.rules[3].labels.memberType | string | `"$3"` |  |
+| exporters.jmx.config.rules[3].labels.replicaId | string | `"$2"` |  |
+| exporters.jmx.config.rules[3].name | string | `"zookeeper_$4_$5"` |  |
+| exporters.jmx.config.rules[3].pattern | string | `"org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d+), name1=replica.(\\d+), name2=(\\w+), name3=(\\w+)><>(\\w+)"` |  |
+| exporters.jmx.config.startDelaySeconds | int | `30` |  |
+| exporters.jmx.enabled | bool | `false` |  |
+| exporters.jmx.env | object | `{}` |  |
+| exporters.jmx.image.pullPolicy | string | `"IfNotPresent"` |  |
+| exporters.jmx.image.repository | string | `"sscaling/jmx-prometheus-exporter"` |  |
+| exporters.jmx.image.tag | string | `"0.3.0"` |  |
+| exporters.jmx.livenessProbe.failureThreshold | int | `8` |  |
+| exporters.jmx.livenessProbe.httpGet.path | string | `"/metrics"` |  |
+| exporters.jmx.livenessProbe.httpGet.port | string | `"jmxxp"` |  |
+| exporters.jmx.livenessProbe.initialDelaySeconds | int | `30` |  |
+| exporters.jmx.livenessProbe.periodSeconds | int | `15` |  |
+| exporters.jmx.livenessProbe.successThreshold | int | `1` |  |
+| exporters.jmx.livenessProbe.timeoutSeconds | int | `60` |  |
+| exporters.jmx.path | string | `"/metrics"` |  |
+| exporters.jmx.ports.jmxxp.containerPort | int | `9404` |  |
+| exporters.jmx.ports.jmxxp.protocol | string | `"TCP"` |  |
+| exporters.jmx.readinessProbe.failureThreshold | int | `8` |  |
+| exporters.jmx.readinessProbe.httpGet.path | string | `"/metrics"` |  |
+| exporters.jmx.readinessProbe.httpGet.port | string | `"jmxxp"` |  |
+| exporters.jmx.readinessProbe.initialDelaySeconds | int | `30` |  |
+| exporters.jmx.readinessProbe.periodSeconds | int | `15` |  |
+| exporters.jmx.readinessProbe.successThreshold | int | `1` |  |
+| exporters.jmx.readinessProbe.timeoutSeconds | int | `60` |  |
+| exporters.jmx.resources | object | `{}` |  |
+| exporters.jmx.serviceMonitor.interval | string | `"30s"` |  |
+| exporters.jmx.serviceMonitor.scheme | string | `"http"` |  |
+| exporters.jmx.serviceMonitor.scrapeTimeout | string | `"30s"` |  |
+| exporters.zookeeper.config.logLevel | string | `"info"` |  |
+| exporters.zookeeper.config.resetOnScrape | string | `"true"` |  |
+| exporters.zookeeper.enabled | bool | `false` |  |
+| exporters.zookeeper.env | object | `{}` |  |
+| exporters.zookeeper.image.pullPolicy | string | `"IfNotPresent"` |  |
+| exporters.zookeeper.image.repository | string | `"josdotso/zookeeper-exporter"` |  |
+| exporters.zookeeper.image.tag | string | `"v1.1.2"` |  |
+| exporters.zookeeper.livenessProbe.failureThreshold | int | `8` |  |
+| exporters.zookeeper.livenessProbe.httpGet.path | string | `"/metrics"` |  |
+| exporters.zookeeper.livenessProbe.httpGet.port | string | `"zookeeperxp"` |  |
+| exporters.zookeeper.livenessProbe.initialDelaySeconds | int | `30` |  |
+| exporters.zookeeper.livenessProbe.periodSeconds | int | `15` |  |
+| exporters.zookeeper.livenessProbe.successThreshold | int | `1` |  |
+| exporters.zookeeper.livenessProbe.timeoutSeconds | int | `60` |  |
+| exporters.zookeeper.path | string | `"/metrics"` |  |
+| exporters.zookeeper.ports.zookeeperxp.containerPort | int | `9141` |  |
+| exporters.zookeeper.ports.zookeeperxp.protocol | string | `"TCP"` |  |
+| exporters.zookeeper.readinessProbe.failureThreshold | int | `8` |  |
+| exporters.zookeeper.readinessProbe.httpGet.path | string | `"/metrics"` |  |
+| exporters.zookeeper.readinessProbe.httpGet.port | string | `"zookeeperxp"` |  |
+| exporters.zookeeper.readinessProbe.initialDelaySeconds | int | `30` |  |
+| exporters.zookeeper.readinessProbe.periodSeconds | int | `15` |  |
+| exporters.zookeeper.readinessProbe.successThreshold | int | `1` |  |
+| exporters.zookeeper.readinessProbe.timeoutSeconds | int | `60` |  |
+| exporters.zookeeper.resources | object | `{}` |  |
+| exporters.zookeeper.serviceMonitor.interval | string | `"30s"` |  |
+| exporters.zookeeper.serviceMonitor.scheme | string | `"http"` |  |
+| exporters.zookeeper.serviceMonitor.scrapeTimeout | string | `"30s"` |  |
+| headless.annotations | object | `{}` |  |
+| image.pullPolicy | string | `"IfNotPresent"` |  |
+| image.repository | string | `"zookeeper"` |  |
+| image.tag | string | `"3.5.5"` |  |
+| jobs.chroots.activeDeadlineSeconds | int | `300` |  |
+| jobs.chroots.backoffLimit | int | `5` |  |
+| jobs.chroots.completions | int | `1` |  |
+| jobs.chroots.config.create | list | `[]` |  |
+| jobs.chroots.enabled | bool | `false` |  |
+| jobs.chroots.env | list | `[]` |  |
+| jobs.chroots.parallelism | int | `1` |  |
+| jobs.chroots.resources | object | `{}` |  |
+| jobs.chroots.restartPolicy | string | `"Never"` |  |
+| nodeSelector | object | `{}` |  |
+| persistence.accessMode | string | `"ReadWriteOnce"` |  |
+| persistence.enabled | bool | `true` |  |
+| persistence.size | string | `"5Gi"` |  |
+| podAnnotations | object | `{}` |  |
+| podDisruptionBudget.maxUnavailable | int | `1` |  |
+| podLabels | object | `{}` |  |
+| ports.client.containerPort | int | `2181` |  |
+| ports.client.protocol | string | `"TCP"` |  |
+| ports.election.containerPort | int | `3888` |  |
+| ports.election.protocol | string | `"TCP"` |  |
+| ports.server.containerPort | int | `2888` |  |
+| ports.server.protocol | string | `"TCP"` |  |
+| priorityClassName | string | `""` |  |
+| prometheus.serviceMonitor.enabled | bool | `false` |  |
+| prometheus.serviceMonitor.selector | object | `{}` |  |
+| replicaCount | int | `3` |  |
+| resources | object | `{}` |  |
+| securityContext.fsGroup | int | `1000` |  |
+| securityContext.runAsUser | int | `1000` |  |
+| service.annotations | object | `{}` |  |
+| service.ports.client.port | int | `2181` |  |
+| service.ports.client.protocol | string | `"TCP"` |  |
+| service.ports.client.targetPort | string | `"client"` |  |
+| service.type | string | `"ClusterIP"` |  |
+| terminationGracePeriodSeconds | int | `1800` |  |
+| tolerations | list | `[]` |  |
+| updateStrategy.type | string | `"RollingUpdate"` |  |
 
-==> v1beta1/StatefulSet
-NAME       DESIRED  CURRENT  AGE
-zookeeper  3        3        2m
-
-==> monitoring.coreos.com/v1/ServiceMonitor
-NAME                      AGE
-zookeeper                 2m
-zookeeper-exporter        2m
-```
-
-1. `statefulsets/zookeeper` is the StatefulSet created by the chart.
-1. `po/zookeeper-<0|1|2>` are the Pods created by the StatefulSet. Each Pod has a single container running a ZooKeeper server.
-1. `svc/zookeeper-headless` is the Headless Service used to control the network domain of the ZooKeeper ensemble.
-1. `svc/zookeeper` is a Service that can be used by clients to connect to an available ZooKeeper server.
-1. `servicemonitor/zookeeper` is a Prometheus ServiceMonitor which scrapes the jmx-exporter metrics endpoint
-1. `servicemonitor/zookeeper-exporter` is a Prometheus ServiceMonitor which scrapes the zookeeper-exporter metrics endpoint
-
-## Configuration
-You can specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
-
-Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
-
-```console
-$ helm install --name my-release -f values.yaml incubator/zookeeper
-```
-
-## Default Values
-
-- You can find all user-configurable settings, their defaults and commentary about them in [values.yaml](values.yaml).
-
-## Deep Dive
-
-## Image Details
-The image used for this chart is based on Alpine 3.9.0.
-
-## JVM Details
-The Java Virtual Machine used for this chart is the OpenJDK JVM 8u192 JRE (headless).
-
-## ZooKeeper Details
-The chart defaults to ZooKeeper 3.5 (latest released version).
-
-## Failover
-You can test failover by killing the leader. Insert a key:
-```console
-$ kubectl exec zookeeper-0 -- bin/zkCli.sh create /foo bar;
-$ kubectl exec zookeeper-2 -- bin/zkCli.sh get /foo;
-```
-
-Watch existing members:
-```console
-$ kubectl run --attach bbox --image=busybox --restart=Never -- sh -c 'while true; do for i in 0 1 2; do echo zk-${i} $(echo stats | nc <pod-name>-${i}.<headless-service-name>:2181 | grep Mode); sleep 1; done; done';
-
-zk-2 Mode: follower
-zk-0 Mode: follower
-zk-1 Mode: leader
-zk-2 Mode: follower
-```
-
-Delete Pods and wait for the StatefulSet controller to bring them back up:
-```console
-$ kubectl delete po -l app=zookeeper
-$ kubectl get po --watch-only
-NAME          READY     STATUS    RESTARTS   AGE
-zookeeper-0   0/1       Running   0          35s
-zookeeper-0   1/1       Running   0         50s
-zookeeper-1   0/1       Pending   0         0s
-zookeeper-1   0/1       Pending   0         0s
-zookeeper-1   0/1       ContainerCreating   0         0s
-zookeeper-1   0/1       Running   0         19s
-zookeeper-1   1/1       Running   0         40s
-zookeeper-2   0/1       Pending   0         0s
-zookeeper-2   0/1       Pending   0         0s
-zookeeper-2   0/1       ContainerCreating   0         0s
-zookeeper-2   0/1       Running   0         19s
-zookeeper-2   1/1       Running   0         41s
-```
-
-Check the previously inserted key:
-```console
-$ kubectl exec zookeeper-1 -- bin/zkCli.sh get /foo
-ionid = 0x354887858e80035, negotiated timeout = 30000
-
-WATCHER::
-
-WatchedEvent state:SyncConnected type:None path:null
-bar
-```
-
-## Scaling
-ZooKeeper can not be safely scaled in versions prior to 3.5.x
-
-## Limitations
-* Only supports storage options that have backends for persistent volume claims.
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.5.0](https://github.com/norwoodj/helm-docs/releases/v1.5.0)

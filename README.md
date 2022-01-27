@@ -4,10 +4,10 @@ This repository stores Helm chart tarballs authored by Luigi Di Fraia. Actual de
 
 ## Using charts from this repo
 
-Make Helm aware of the [Helm chart repository](https://luigidifraia.github.io/helm-charts), so you will be able to install charts from it without having to use a long URL name:
+Make Helm aware of the [Helm chart repository](https://luigidifraiawork.github.io/helm-charts), so you will be able to install charts from it without having to use a long URL name:
 
 ```bash
-helm repo add luigidifraia https://luigidifraia.github.io/helm-charts
+helm repo add luigidifraia https://luigidifraiawork.github.io/helm-charts
 helm repo update
 ```
 
